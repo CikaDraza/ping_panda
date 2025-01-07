@@ -18,7 +18,7 @@ export default function Home() {
               <span className='bg-gradient-to-r from-brand-700 to-brand-800 text-transparent bg-clip-text'>Deliverd to Your Discord</span>
             </Heading>
             <p className='text-base/7 text-gray-600 max-w-prose text-center text-pretty'>
-              PingPanda is the easiest way to monitor your Saas. Get instant notifications for{" "}
+              PingWolf is the easiest way to monitor your Saas. Get instant notifications for{" "}
               <span className='font-semibold text-gray-700'>
                 sales, new users, or any other event
               </span>

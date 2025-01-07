@@ -3,6 +3,9 @@ import { Inter } from "next/font/google"
 import { Providers } from "./components/providers"
 import { EB_Garamond } from "next/font/google"
 import { cn } from "@/utils"
+import {
+  ClerkProvider,
+} from '@clerk/nextjs'
 
 import "./globals.css"
 
@@ -13,7 +16,7 @@ const eb_garamond = EB_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: "jStack App",
+  title: "Ping Wolf - jStack App",
   description: "Created using jStack",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 }
@@ -24,10 +27,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={cn(inter.variable, eb_garamond.variable)}>
-      <body className="font-sans bg-brand-50 text-brand-950 antialiased">
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={cn(inter.variable, eb_garamond.variable)}>
+        <body className="font-sans bg-brand-50 text-brand-950 antialiased">
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
