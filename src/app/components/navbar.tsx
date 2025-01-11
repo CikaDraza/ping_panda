@@ -5,9 +5,10 @@ import Logo from './logo'
 import { SignInButton, SignOutButton, SignUpButton } from '@clerk/nextjs';
 import ShinyButton from './shiny-button';
 import { SquareChevronRight } from 'lucide-react';
+import { currentUser } from '@clerk/nextjs/server';
 
-export default function Navbar() {
-  const user = false;
+export default async function Navbar() {
+  const user = await currentUser();
 
   return (
     <header>
@@ -46,14 +47,12 @@ export default function Navbar() {
                     <Link href={"/pricing"}>
                       <button type="button" className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-brand-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Pricing</button>
                     </Link>
-                    <SignInButton>
+                    <Link href={"/sign-in"}>
                       <button type="button" className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-brand-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Sign in</button>
-                    </SignInButton>
-                    <SignUpButton>
-                      <ShinyButton href='#' className='px-5 py-2.5 me-2 mb-2 text-sm'>
-                        Sign up
-                      </ShinyButton>
-                    </SignUpButton>
+                    </Link>
+                    <ShinyButton href='/sign-up' className='px-5 py-2.5 me-2 mb-2 text-sm'>
+                      Sign up
+                    </ShinyButton>
                   </div>
                 </>
               }
