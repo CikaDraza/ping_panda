@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { HTTPException } from "hono/http-exception"
-import { PropsWithChildren, useState } from "react"
+import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PropsWithChildren, useState } from "react";
 
 export const Providers = ({ children }: PropsWithChildren) => {
   const [queryClient] = useState(
@@ -10,20 +9,17 @@ export const Providers = ({ children }: PropsWithChildren) => {
       new QueryClient({
         queryCache: new QueryCache({
           onError: (err) => {
-            let errorMessage: string
-            if (err instanceof HTTPException) {
-              errorMessage = err.message
-            } else if (err instanceof Error) {
-              errorMessage = err.message
+            let errorMessage: string;
+            if (err instanceof Error) {
+              errorMessage = err.message;
             } else {
-              errorMessage = "An unknown error occurred."
+              errorMessage = "An unknown error occurred.";
             }
-            // toast notify user, log as an example
-            console.log(errorMessage)
+            console.log(errorMessage);
           },
         }),
       })
-  )
+  );
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-}
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+};

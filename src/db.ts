@@ -1,24 +1,52 @@
-import { Pool } from "@neondatabase/serverless"
-import { PrismaNeon } from "@prisma/adapter-neon"
-import { PrismaClient } from "@prisma/client"
+import mongoose from 'mongoose';
 
-declare global {
-  // eslint-disable-next-line no-var
-  var cachedPrisma: PrismaClient
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
-let prisma: PrismaClient
-if (process.env.NODE_ENV === "production") {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL })
-  const adapter = new PrismaNeon(pool)
-  prisma = new PrismaClient({ adapter })
-} else {
-  if (!global.cachedPrisma) {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL })
-    const adapter = new PrismaNeon(pool)
-    global.cachedPrisma = new PrismaClient({ adapter })
+interface Connection {
+  isConnected: boolean;
+}
+
+const connection: Connection = {
+  isConnected: false,
+};
+
+async function connect() {
+  if (connection.isConnected) {
+    console.log('Already connected to MongoDB');
+    return;
   }
-  prisma = global.cachedPrisma
+
+  if (mongoose.connections.length > 0) {
+    connection.isConnected = mongoose.connections[0].readyState === 1;
+    if (connection.isConnected) {
+      console.log('Using previous connection');
+      return;
+    }
+
+    await mongoose.disconnect();
+  }
+
+
+  const db = await mongoose.connect(process.env.MONGO_URI || '');
+  console.log('New connection established');
+  connection.isConnected = mongoose.connections[0].readyState === 1;
 }
 
-export const db = prisma
+async function disconnect() {
+  if (connection.isConnected) {
+    if (process.env.NODE_ENV === 'production') {
+      await mongoose.disconnect();
+      connection.isConnected = false;
+    } else {
+      console.log('Not disconnected in development');
+    }
+  }
+}
+
+const db = { connect, disconnect };
+
+export default db;
