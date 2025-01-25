@@ -1,6 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IEventCategory extends Document {
+  map: any;
+  _id: string;
   name: string;
   color: string;
   emoji?: string;

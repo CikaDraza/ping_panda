@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import db from "@/db";
 import { eventCategoryService } from "@/server/services/eventCategoryService";
 import { currentUser } from "@clerk/nextjs/server";
-import EventCategory from "@/server/models/EventCategory";
+import EventCategory, { IEventCategory } from "@/server/models/EventCategory";
 
 export async function GET(request: Request) {
   try {
@@ -15,9 +15,14 @@ export async function GET(request: Request) {
     }
 
     const userId = user.id;
-    const eventCategories = await EventCategory.find({ userId });
+    const eventCategories = await EventCategory.find({ userId }).lean<IEventCategory>();
 
-    return NextResponse.json(eventCategories, { status: 200 });
+    const normalizedCategories = eventCategories.map((category: { _id: { toString: () => any; }; }) => ({
+      ...category,
+      _id: category._id.toString(),
+    }));
+
+    return NextResponse.json(normalizedCategories, { status: 200 });
   } catch (error) {
     console.error("Error fetching event categories:", error);
     return NextResponse.json({ message: error || "Internal server error." }, { status: 500 });
