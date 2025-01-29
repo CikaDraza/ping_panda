@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     if (!user) {
       return NextResponse.json({ message: "User not authenticated." }, { status: 401 });
     }
-
+    
     const userId = user.id;
     const eventCategories = await EventCategory.find({ userId }).lean<IEventCategory>();
 

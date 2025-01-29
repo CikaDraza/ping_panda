@@ -28,24 +28,28 @@ const userSchema = new Schema<IUser>({
   plan: { type: String, enum: Plan, default: Plan.FREE },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+},
+{
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 });
 
 // Relacije
 userSchema.virtual('eventCategories', {
   ref: 'EventCategory',
-  localField: '_id',
+  localField: 'externalId',
   foreignField: 'userId',
 });
 
 userSchema.virtual('events', {
   ref: 'Event',
-  localField: '_id',
+  localField: 'externalId',
   foreignField: 'userId',
 });
 
 userSchema.virtual('quota', {
   ref: 'Quota',
-  localField: '_id',
+  localField: 'externalId',
   foreignField: 'userId',
 });
 

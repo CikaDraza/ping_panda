@@ -18,6 +18,6 @@ const quotaSchema = new Schema<IQuota>({
 
 quotaSchema.index({ userId: 1, year: 1, month: 1 });
 
-const Quota = mongoose.model<IQuota>('Quota', quotaSchema);
+const Quota = mongoose.models.Quota || mongoose.model<IQuota>('Quota', quotaSchema);
 
 export default Quota;

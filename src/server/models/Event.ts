@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IEvent extends Document {
+  _id: string;
   formattedMessage: string;
   userId: string;
   name: string;
@@ -17,11 +18,11 @@ const eventSchema = new Schema<IEvent>({
   name: { type: String, required: true },
   fields: { type: Schema.Types.Mixed, required: true },
   deliveryStatus: { type: String, enum: ['PENDING', 'DELIVERED', 'FAILED'], default: 'PENDING' },
-  eventCategoryId: { type: String, ref: 'EventCategory' },
+  eventCategoryId: { type: Schema.Types.ObjectId, ref: 'EventCategory' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
 
-const Event = mongoose.model<IEvent>('Event', eventSchema);
+const Event = mongoose.models.Event || mongoose.model<IEvent>('Event', eventSchema);
 
 export default Event;

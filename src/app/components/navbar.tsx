@@ -8,10 +8,11 @@ import { FileKey, LogOut, Settings, SquareChevronRight } from 'lucide-react';
 import { currentUser } from '@clerk/nextjs/server';
 import Image from 'next/image';
 import MobileMenu from './mobile-menu';
+import DefaultAvatar from './default-avatar';
 
 export default async function Navbar() {
   const user = await currentUser();
-  const avatarUrl = user?.hasImage ? user.imageUrl : '/images/icon-user.gif';
+  const avatarUrl = user?.hasImage && user.imageUrl;
 
   return (
     <header className='relative'>
@@ -48,12 +49,7 @@ export default async function Navbar() {
                       </Link>
                     </nav>
                     <div title={user?.firstName + " " + user?.lastName} className='mr-4 rounded-full w-10 h-10 overflow-hidden flex justify-center items-center'>
-                      <Image
-                        src={avatarUrl}
-                        alt='user avatar'
-                        width={46}
-                        height={46}
-                      />
+                      <DefaultAvatar imageUrl={avatarUrl} />
                     </div>
                     <SignOutButton>
                       <button type="button" className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Sign out</button>
@@ -87,12 +83,7 @@ export default async function Navbar() {
                     </button>
                     <div className='flex items-center mb-2'>
                       <div title={user?.firstName + " " + user?.lastName} className='mr-4 rounded-full w-10 h-10 overflow-hidden flex justify-center items-center'>
-                        <Image
-                          src={avatarUrl}
-                          alt='user avatar'
-                          width={46}
-                          height={46}
-                        />
+                        <DefaultAvatar imageUrl={avatarUrl} />
                       </div>
                       <SignOutButton>
                         <LogOut />

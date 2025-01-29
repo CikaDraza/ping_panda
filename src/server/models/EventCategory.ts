@@ -4,7 +4,7 @@ export interface IEventCategory extends Document {
   map: any;
   _id: string;
   name: string;
-  color: string;
+  color: number;
   emoji?: string;
   userId: string;
   createdAt: Date;
@@ -13,7 +13,7 @@ export interface IEventCategory extends Document {
 
 const eventCategorySchema = new Schema<IEventCategory>({
   name: { type: String, required: true },
-  color: { type: String, required: true },
+  color: { type: Number, required: true },
   emoji: { type: String, sparse: true },
   userId: { type: String, required: true, ref: 'User' },
   createdAt: { type: Date, default: Date.now },

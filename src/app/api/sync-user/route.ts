@@ -8,8 +8,6 @@ export const POST = async (req: Request) => {
 
     const user = await syncUserFromClerk();
 
-    console.log("Authenticated user:", user);
-
     return NextResponse.json(
       { message: "User synchronized successfully.", user },
       { status: 200 }
