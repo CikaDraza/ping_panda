@@ -6,10 +6,10 @@ import { FREE_QUOTA, PRO_QUOTA } from "@/config";
 import DiscordClient from "@/lib/discord-client";
 import Event from "@/server/models/Event";
 import Joi from "joi";
-import EventCategory from "@/server/models/EventCategory";
 
 export const POST = async (req: NextRequest) => {
   try {
+    
     await db.connect();
 
     const authHeader = req.headers.get("Authorization");

@@ -3,9 +3,13 @@ import db from "@/db";
 import { eventCategoryService } from "@/server/services/eventCategoryService";
 import { currentUser } from "@clerk/nextjs/server";
 import EventCategory, { IEventCategory } from "@/server/models/EventCategory";
+import { startOfMonth } from "date-fns";
+import Event from "@/server/models/Event";
 
 export async function GET(request: Request) {
+
   try {
+
     await db.connect();
 
     const user = await currentUser();
@@ -17,12 +21,36 @@ export async function GET(request: Request) {
     const userId = user.id;
     const eventCategories = await EventCategory.find({ userId }).lean<IEventCategory>();
 
-    const normalizedCategories = eventCategories.map((category: { _id: { toString: () => any; }; }) => ({
-      ...category,
-      _id: category._id.toString(),
-    }));
+    const categoriesWithStats: IEventCategory[] = await Promise.all(
+      eventCategories.map(async (category: { _id: { toString: () => any; }; }) => {
 
-    return NextResponse.json(normalizedCategories, { status: 200 });
+        const lastEvent = await Event.findOne({ eventCategoryId: category._id })
+          .sort({ createdAt: -1 })
+          .select("createdAt");
+
+        const uniqueFieldsSet = new Set();
+        const events = await Event.find({ eventCategoryId: category._id });
+        events.forEach((event) => {
+          Object.keys(event.fields).forEach((key) => uniqueFieldsSet.add(key));
+        });
+
+        const eventsThisMonth = await Event.countDocuments({
+          eventCategoryId: category._id,
+          createdAt: { $gte: startOfMonth(new Date()) },
+        });
+
+        return {
+          ...category,
+          _id: category._id.toString(),
+          lastPing: lastEvent?.createdAt ? new Date(lastEvent.createdAt) : null,
+          uniqueFields: uniqueFieldsSet.size,
+          eventsThisMonth,
+        };
+        
+      })
+    );
+
+    return NextResponse.json(categoriesWithStats, { status: 200 });
   } catch (error) {
     console.error("Error fetching event categories:", error);
     return NextResponse.json({ message: error || "Internal server error." }, { status: 500 });
@@ -59,7 +87,6 @@ export async function DELETE(request: Request) {
 
     const userId = user.id;
 
-    // Get categoryId from request URL
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get("id");
 
@@ -67,7 +94,6 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ message: "Category ID is required." }, { status: 400 });
     }
 
-    // Find and delete the category
     const eventCategory = await EventCategory.findOneAndDelete({ _id: categoryId, userId });
 
     if (!eventCategory) {

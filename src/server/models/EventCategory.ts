@@ -1,6 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IEventCategory extends Document {
+  eventsThisMonth: number;
+  uniqueFields: number;
+  lastPing: string | number | Date | null;
   map: any;
   _id: string;
   name: string;

@@ -29,10 +29,7 @@ export default function DashboardContentPage() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [tempColor, setTempColor] = useState(int32ToHex(newCategory.color));
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-
-  console.log(newCategory);
-  
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);  
 
   useEffect(() => {
     setTempColor(int32ToHex(newCategory.color));
@@ -292,20 +289,20 @@ export default function DashboardContentPage() {
                     <Clock className="size-4 mr-2 text-brand-500" />
                     <span className="font-medium">Last ping:</span>
                     <span className="ml-1">
-                      {category.createdAt
-                        ? formatDistanceToNow(category.createdAt) + " ago"
+                      {category.lastPing
+                        ? formatDistanceToNow(new Date(category.lastPing)) + " ago"
                         : "Never"}
                     </span>
                   </div>
                   <div className="flex items-center text-sm/5 text-gray-600">
                     <Database className="size-4 mr-2 text-brand-500" />
                     <span className="font-medium">Unique fields:</span>
-                    <span className="ml-1">{category ? 1 : 0}</span>
+                    <span className="ml-1">{category.uniqueFields || 0}</span>
                   </div>
                   <div className="flex items-center text-sm/5 text-gray-600">
                     <BarChart2 className="size-4 mr-2 text-brand-500" />
                     <span className="font-medium">Events this month:</span>
-                    <span className="ml-1">{categories.length || 0}</span>
+                    <span className="ml-1">{category.eventsThisMonth || 0}</span>
                   </div>
                 </div>
 

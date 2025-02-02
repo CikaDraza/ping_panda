@@ -5,7 +5,7 @@ export interface IEvent extends Document {
   formattedMessage: string;
   userId: string;
   name: string;
-  fields: object;
+  fields: Record<string, any>;
   deliveryStatus: 'PENDING' | 'DELIVERED' | 'FAILED';
   eventCategoryId?: string;
   createdAt: Date;
